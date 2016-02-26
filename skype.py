@@ -23,14 +23,18 @@ def writeSettings():
     with open('config.json', 'w') as f:
         json.dump(settings, f)
 
-def commands(Message, Status):
+def onSkypeMsg(Message, Status):
     if Status == 'RECEIVED':
-        if Message.Sender.FullName == "":
-            Name = Message.Sender.Handle
+        if SkypeChatId in Message.Chat.Name:
+            if Message.Sender.FullName == "":
+                Name = Message.Sender.Handle
+            else:
+                Name = Message.Sender.FullName
+            msg = "[skype] (%s): %s" % (Name, Message.Body)
+            sendSlackMsg(msg)
         else:
-            Name = Message.Sender.FullName
-        msg = "[skype] (%s): %s" % (Name, Message.Body)
-        sendSlackMsg(msg)
+            if "!ping" in Message.Body:
+                Message.chat.SendMessage("pong")
 
 def sendSkypeMsg(msg):
     for chat in skype.Chats:
@@ -51,18 +55,16 @@ def loadUsers(token):
     users = json.loads(responseUser.text)["members"]
     return users
 
-def findUser(userId):
+def findUser(userId, recurcive=True):
     global users
     if 'users' not in globals():
         users = loadUsers(USERTOKENSTRING)
     for user in users:
         if userId == user["id"]:
             return user["name"]
-    #TODO fix this
-    users = loadUsers(USERTOKENSTRING)
-    for user in users:
-        if userId == user["id"]:
-            return user["name"]
+    if recursive:
+        users = loadUsers(USERTOKENSTRING)
+        return findUser(userId, False)
  
 def getSlackHistory(token):
     global slack_oldest
@@ -87,7 +89,7 @@ def getSlackHistory(token):
             writeSettings()
 
 skype = Skype4Py.Skype(); 
-skype.OnMessageStatus = commands
+skype.OnMessageStatus = onSkypeMsg
 skype.Attach();
 
 while True: 
