@@ -25,14 +25,15 @@ def writeSettings():
 
 def onSkypeMsg(Message, Status):
     if Status == 'RECEIVED':
+        if Message.Sender.FullName == "":
+            Name = Message.Sender.Handle
+        else:
+            Name = Message.Sender.FullName
+        msg = "[skype] (%s): %s" % (Name, Message.Body)
         if SkypeChatId in Message.Chat.Name:
-            if Message.Sender.FullName == "":
-                Name = Message.Sender.Handle
-            else:
-                Name = Message.Sender.FullName
-            msg = "[skype] (%s): %s" % (Name, Message.Body)
             sendSlackMsg(msg)
         elif "!ping" in Message.Body:
+            print msg
             Message.Chat.SendMessage("pong")
 
 def sendSkypeMsg(msg):
