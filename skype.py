@@ -107,7 +107,7 @@ while True:
     time.sleep(delay)
     try:
         msgCount = getSlackHistory(USERTOKENSTRING)
+        delay = smartDelay(msgCount, delay)
     except:
        pass
-    delay = smartDelay(msgCount, delay)
 #    print "delay: %s" %(delay)
