@@ -82,7 +82,7 @@ def getSlackHistory(token):
 
         msg = "[slack] (%s): %s" %(userName, message["text"])
         if not "bot" in userName:
-            print msg
+            print msg.encode('utf-8')
             sendSkypeMsg(msg)
 
         if float(slack_oldest) <= float(message["ts"]):
