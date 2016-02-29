@@ -80,7 +80,7 @@ def getSlackHistory(token):
         else:
             userName = findUser(message["user"])
 
-        msg = "[slack] (%s): %s" %(userName, message["text"])
+        msg = "[slack] (%s): %s" %(userName, message["text"].encode('utf-8'))
         if not "bot" in userName:
             print msg
             sendSkypeMsg(msg)
