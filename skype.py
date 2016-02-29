@@ -33,7 +33,7 @@ def onSkypeMsg(Message, Status):
             msg = "[skype] (%s): %s" % (Name, Message.Body)
             sendSlackMsg(msg)
         elif "!ping" in Message.Body:
-            Message.chat.SendMessage("pong")
+            Message.Chat.SendMessage("pong")
 
 def sendSkypeMsg(msg):
     for chat in skype.Chats:
