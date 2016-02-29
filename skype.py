@@ -32,9 +32,8 @@ def onSkypeMsg(Message, Status):
                 Name = Message.Sender.FullName
             msg = "[skype] (%s): %s" % (Name, Message.Body)
             sendSlackMsg(msg)
-        else:
-            if "!ping" in Message.Body:
-                Message.chat.SendMessage("pong")
+        elif "!ping" in Message.Body:
+            Message.chat.SendMessage("pong")
 
 def sendSkypeMsg(msg):
     for chat in skype.Chats:
@@ -94,11 +93,10 @@ def smartDelay(msgCount, currentDelay):
     maxDelay = 5.0
     if msgCount != 0:
         return 1.0
+    elif currentDelay < maxDelay:
+        return currentDelay+0.1
     else:
-        if currentDelay < maxDelay:
-            return currentDelay+0.1
-        else:
-            return maxDelay
+        return maxDelay
 
 skype = Skype4Py.Skype(); 
 skype.OnMessageStatus = onSkypeMsg
