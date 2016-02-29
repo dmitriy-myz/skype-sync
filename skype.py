@@ -91,11 +91,14 @@ def getSlackHistory(token):
     return msgCount
 
 def smartDelay(msgCount, currentDelay):
+    maxDelay = 5.0
     if msgCount != 0:
         return 1.0
     else:
-        if currentDelay < 10:
+        if currentDelay < maxDelay:
             return currentDelay+0.1
+        else:
+            return maxDelay
 
 skype = Skype4Py.Skype(); 
 skype.OnMessageStatus = onSkypeMsg
