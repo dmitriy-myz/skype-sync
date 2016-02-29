@@ -17,7 +17,7 @@ with open('config.json') as f:
     CHANNEL_ID = settings['slack']['CHANNEL_ID']
     slack_oldest = settings['slack']['oldest']
     SkypeChatId = settings['skype']['ChatId']
-
+    delay = 1.0
 def writeSettings():
     settings['slack']['oldest'] = slack_oldest
     with open('config.json', 'w') as f:
@@ -73,6 +73,7 @@ def getSlackHistory(token):
 #    print "oldest: %s" %(slack_oldest)
 
     messages = json.loads(response.text, encoding = 'utf-8')["messages"]
+    msgCount = len(messages)
     for message in reversed(messages):
         if "username" in message:
             userName = message["username"]
@@ -87,14 +88,25 @@ def getSlackHistory(token):
         if float(slack_oldest) <= float(message["ts"]):
             slack_oldest = str(message["ts"])
             writeSettings()
+    return msgCount
+
+def smartDelay(msgCount, currentDelay):
+    if msgCount != 0:
+        return 1.0
+    else:
+        if currentDelay < 10:
+            return currentDelay+0.1
 
 skype = Skype4Py.Skype(); 
 skype.OnMessageStatus = onSkypeMsg
 skype.Attach();
 
-while True: 
-    time.sleep(1.0)
+while True:
+
+    time.sleep(delay)
     try:
-        getSlackHistory(USERTOKENSTRING)
+        msgCount = getSlackHistory(USERTOKENSTRING)
     except:
        pass
+    delay = smartDelay(msgCount, delay)
+    print "delay: %s" %(delay)
