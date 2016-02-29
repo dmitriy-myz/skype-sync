@@ -72,7 +72,7 @@ def getSlackHistory(token):
     response = requests.get("https://slack.com/api/channels.history",params=params)
 #    print "oldest: %s" %(slack_oldest)
 
-    messages = json.loads(response.text, encoding = 'utf-8')["messages"]
+    messages = json.loads(response.text.decode('utf-8'), encoding = 'utf-8')["messages"]
     msgCount = len(messages)
     for message in reversed(messages):
         if "username" in message:
