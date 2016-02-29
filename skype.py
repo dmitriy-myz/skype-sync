@@ -112,4 +112,4 @@ while True:
     except:
        pass
     delay = smartDelay(msgCount, delay)
-    print "delay: %s" %(delay)
+#    print "delay: %s" %(delay)
