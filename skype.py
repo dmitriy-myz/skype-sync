@@ -47,7 +47,7 @@ def memberListSlack():
     userNames = []
     token = USERTOKENSTRING
     params = {"token": token, "channel": CHANNEL_ID}
-    requests.post("https://api.slack.com/api/channels.info", params = params)
+    response = requests.post("https://api.slack.com/api/channels.info", params = params)
     members = json.loads(response.text.decode('utf-8'), encoding = 'utf-8')["members"]
     for member in members:
         UserName = findUser(member)
