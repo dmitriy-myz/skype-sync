@@ -32,9 +32,28 @@ def onSkypeMsg(Message, Status):
         msg = "[skype] (%s): %s" % (Name, Message.Body)
         if SkypeChatId in Message.Chat.Name:
             sendSlackMsg(msg)
-        elif "!ping" in Message.Body:
+#commands
+        if "!ping" in Message.Body:
             print msg
             Message.Chat.SendMessage("pong")
+        elif "!members" in Message.Body:
+            print msg
+            answer = memberListSlack
+            answer = "Slack: %s" %(answer)
+            Message.Chat.SendMessage(answer)
+
+
+def memberListSlack():
+    userNames = []
+    token = USERTOKENSTRING
+    params = {"token": token, "channel": CHANNEL_ID}
+    requests.post("https://api.slack.com/api/channels.info", params = params)
+    members = json.loads(response.text.decode('utf-8'), encoding = 'utf-8')["members"]
+    for member in members:
+        UserName = findUser(member)
+        userNames.append(UserName)
+    return "\n".join(userNames)
+
 
 def sendSkypeMsg(msg):
     for chat in skype.Chats:
