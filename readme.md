@@ -15,15 +15,18 @@ pip install dbus
 
 Skype:
 
-ChatId
+get ChatId
+```
 /createmoderatedchat
 /get name
-
+```
 
 Slack:
-CHANNEL_ID
+
+get CHANNEL_ID
+```
 https://api.slack.com/docs/oauth-test-tokens
 https://slack.com/api/channels.list?pretty=1&token=xoxp-xxxx
-
+```
 
 
