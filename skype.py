@@ -38,7 +38,7 @@ def onSkypeMsg(Message, Status):
             Message.Chat.SendMessage("pong")
         elif "!members" in Message.Body:
             print msg
-            answer = memberListSlack
+            answer = memberListSlack()
             answer = "Slack: %s" %(answer)
             Message.Chat.SendMessage(answer)
 
