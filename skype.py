@@ -24,11 +24,6 @@ def writeSettings():
     with open('config.json', 'w') as f:
         json.dump(settings, f)
 class Skype:
-    def __init__(self):
-        skype = Skype4Py.Skype();
-        skype.OnMessageStatus = self.onMsg
-        skype.Attach();
-    
     def onMsg(self, Message, Status):
         msg = dict()
         if Status == 'RECEIVED':
@@ -130,8 +125,11 @@ def onMsgReceive(msg):
     #print "[%s] (%s): %s" %(msg["messenger"], msg["sender"], msg["text"])
 
 slack = Slack(settings['slack']['USERTOKENSTRING'], settings['slack']['CHANNEL_ID'])
-#skype = Skype()
-
+skype = Skype()
+skypeAPI = Skype4Py.Skype();
+skypeAPI.OnMessageStatus = skype.onMsg
+skypeAPI.Attach();
+ 
 thread = threading.Thread(target=slack.main)
 thread.daemon = True
 thread.start()
