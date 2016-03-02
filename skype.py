@@ -1,10 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import Skype4Py
+#import Skype4Py
 import time
 import requests
 import json
+import threading
 
 def dump(obj):
     for attr in dir(obj):
@@ -22,8 +23,8 @@ def writeSettings():
     settings['slack']['oldest'] = slack_oldest
     with open('config.json', 'w') as f:
         json.dump(settings, f)
+'''
 class Skype:
-
     def onSkypeMsg(Message, Status):
         if Status == 'RECEIVED':
             if Message.Sender.FullName == "":
@@ -51,83 +52,93 @@ class Skype:
     skype.OnMessageStatus = onSkypeMsg
     skype.Attach();
 
-
+'''
 class Slack:
-
-    def memberListSlack():
+    def __init__(self, userToken=None, channelId=None):
+        self._token = userToken
+        self._channelId = channelId
+        self._users = self._loadUsers()
+        self._oldest = 0
+        self._maxDelay = 5.0
+        self._minDelay = 1.0
+        self._delay = 1.0
+    def memberList(self):
         userNames = []
-        token = USERTOKENSTRING
-        params = {"token": token, "channel": CHANNEL_ID}
+        params = {"token": self._token, "channel": self._channelId}
         response = requests.post("https://api.slack.com/api/channels.info", params = params)
         members = json.loads(response.text.decode('utf-8'), encoding = 'utf-8')["channel"]["members"]
         for member in members:
-            UserName = findUser(member)
-            userNames.append(UserName)
+            userName = self.findUser(member)
+            userNames.append(userName)
         return "\n".join(userNames)
-
-
-    def sendSlackMsg(msg):
-        token = USERTOKENSTRING
-        params = {"token": token, "channel": CHANNEL_ID, "text": msg}
+    def sendMsg(self, msg):
+        params = {"token": self._token, "channel": self._channelId, "text": msg}
         requests.post("https://api.slack.com/api/chat.postMessage", params = params)
         print msg
-        pass
-
-    def loadUsers(token):
-        params = {"token": token, "channel": CHANNEL_ID, "oldest": slack_oldest}
+    def _loadUsers(self):
+        params = {"token": self._token, "channel": self._channelId}
         responseUser = requests.get("https://slack.com/api/users.list",params=params)
         users = json.loads(responseUser.text)["members"]
         return users
-
-    def findUser(userId, recurcive=True):
-        global users
-        if 'users' not in globals():
-            users = loadUsers(USERTOKENSTRING)
-        for user in users:
+    def findUser(self, userId, recurcive=True):
+        for user in self._users:
             if userId == user["id"]:
                 return user["name"]
         if recursive:
-            users = loadUsers(USERTOKENSTRING)
-            return findUser(userId, False)
- 
-    def getSlackHistory(token):
-        global slack_oldest
-        params = {"token": token, "channel": CHANNEL_ID, "oldest": slack_oldest, "inclusive": 0}
-        response = requests.get("https://slack.com/api/channels.history",params=params)
+            self._users = self._loadUsers()
+            return self.findUser(userId, False)
+    def getHistory(self):
+        msg = dict()
+        params = {"token": self._token, "channel": self._channelId, "oldest": self._oldest}
+        response = requests.post("https://slack.com/api/channels.history", params=params)
     #    print "oldest: %s" %(slack_oldest)
-
         messages = json.loads(response.text.decode('utf-8'), encoding = 'utf-8')["messages"]
         msgCount = len(messages)
         for message in reversed(messages):
             if "username" in message:
-                userName = message["username"]
+                msg["sender"] = message["username"]
             else:
-                userName = findUser(message["user"])
-    
-            msg = "[slack] (%s): %s" %(userName, message["text"])
-            if not "bot" in userName:
-                print msg.encode('utf-8')
-                sendSkypeMsg(msg)
-
-            if float(slack_oldest) <= float(message["ts"]):
-                slack_oldest = str(message["ts"])
-                writeSettings()
+                msg["sender"] = self.findUser(message["user"])
+            msg["text"] = message["text"]
+            msg["chat"] = self._channelId
+            msg["messenger"] = "slack"
+            msg_ = "[slack] (%s): %s" %(msg["sender"], msg["text"])
+            if not "bot" in msg["sender"]:
+                onMsgReceive(msg)
+                print msg_.encode('utf-8')
+            if float(self._oldest) <= float(message["ts"]):
+                self._oldest = str(message["ts"])
+                #writeSettings()
         return msgCount
-
-    def smartDelay(msgCount, currentDelay):
-        maxDelay = 5.0
+    def smartDelay(self, msgCount, currentDelay):
         if msgCount != 0:
-            return 1.0
-        elif currentDelay < maxDelay:
+            return self._minDelay
+        elif currentDelay < self._maxDelay:
             return currentDelay+0.1
         else:
-            return maxDelay
+            return self._maxDelay
+    def main(self):
+        while True:
+            time.sleep(self._delay)
+            try:
+                msgCount = self.getHistory()
+                self._delay = self.smartDelay(msgCount, delay)
+            except Exception as e:
+               print(e)
 
-    while True:
-        time.sleep(delay)
-        try:
-            msgCount = getSlackHistory(USERTOKENSTRING)
-            delay = smartDelay(msgCount, delay)
-        except:
-           pass
-    #    print "delay: %s" %(delay)
+def onMsgReceive(msg):
+    print "==================="
+    print "received message"
+    print "messenger: %s" % (msg["messenger"])
+    print "channel: %s" %(msg["chat"])
+    print "from: %s" %(msg["sender"])
+    print "text: %s" %(msg["text"])
+
+slack = Slack(settings['slack']['USERTOKENSTRING'], settings['slack']['CHANNEL_ID'])
+
+thread = threading.Thread(target=slack.main)
+thread.daemon = True
+thread.start()
+while True:
+    raw_input()
+    time.sleep(1.0)
