@@ -128,6 +128,6 @@ while True:
     try:
         msgCount = getSlackHistory(USERTOKENSTRING)
         delay = smartDelay(msgCount, delay)
-    except:
-       pass
+    except Exception as e:
+       print(e)
 #    print "delay: %s" %(delay)
