@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-#import Skype4Py
+import Skype4Py
 import time
 import requests
 import json
@@ -23,36 +23,33 @@ def writeSettings():
     settings['slack']['oldest'] = slack_oldest
     with open('config.json', 'w') as f:
         json.dump(settings, f)
-'''
 class Skype:
-    def onSkypeMsg(Message, Status):
+    def __init__(self):
+        skype = Skype4Py.Skype();
+        skype.OnMessageStatus = self.onMsg
+        skype.Attach();
+    
+    def onMsg(self, Message, Status):
+        msg = dict()
         if Status == 'RECEIVED':
             if Message.Sender.FullName == "":
-                Name = Message.Sender.Handle
+                msg["sender"] = Message.Sender.Handle
             else:
-                Name = Message.Sender.FullName
-            msg = "[skype] (%s): %s" % (Name, Message.Body)
-            if SkypeChatId in Message.Chat.Name:
-                sendSlackMsg(msg)
+                msg["sender"] = Message.Sender.FullName
+            msg["text"] = Message.Body
+            msg["messenger"] = "skype"
+            msg["chat"] = Message.Chat.Name
+#            msg = "[skype] (%s): %s" % (Name, Message.Body)
+            onMsgReceive(msg)
+#            if SkypeChatId in Message.Chat.Name:
+#                sendSlackMsg(msg)
     #commands
-            if "!ping" in Message.Body:
-                print msg
-                Message.Chat.SendMessage("pong")
-            elif "!members" in Message.Body:
-                print msg
-                answer = memberListSlack()
-                answer = "Slack: %s" %(answer)
-                Message.Chat.SendMessage(answer)
-    def sendSkypeMsg(msg):
+    def sendMsg(self, msg):
         for chat in skype.Chats:
             if SkypeChatId in chat.Name:
                 chat.SendMessage(msg)
                 print chat.Name 
-    skype = Skype4Py.Skype(); 
-    skype.OnMessageStatus = onSkypeMsg
-    skype.Attach();
 
-'''
 class Slack:
     def __init__(self, userToken=None, channelId=None):
         self._token = userToken
@@ -91,7 +88,6 @@ class Slack:
         msg = dict()
         params = {"token": self._token, "channel": self._channelId, "oldest": self._oldest}
         response = requests.post("https://slack.com/api/channels.history", params=params)
-    #    print "oldest: %s" %(slack_oldest)
         messages = json.loads(response.text.decode('utf-8'), encoding = 'utf-8')["messages"]
         msgCount = len(messages)
         for message in reversed(messages):
@@ -102,10 +98,8 @@ class Slack:
             msg["text"] = message["text"]
             msg["chat"] = self._channelId
             msg["messenger"] = "slack"
-            msg_ = "[slack] (%s): %s" %(msg["sender"], msg["text"])
             if not "bot" in msg["sender"]:
                 onMsgReceive(msg)
-                print msg_.encode('utf-8')
             if float(self._oldest) <= float(message["ts"]):
                 self._oldest = str(message["ts"])
                 #writeSettings()
@@ -133,8 +127,10 @@ def onMsgReceive(msg):
     print "channel: %s" %(msg["chat"])
     print "from: %s" %(msg["sender"])
     print "text: %s" %(msg["text"])
+    #print "[%s] (%s): %s" %(msg["messenger"], msg["sender"], msg["text"])
 
 slack = Slack(settings['slack']['USERTOKENSTRING'], settings['slack']['CHANNEL_ID'])
+#skype = Skype()
 
 thread = threading.Thread(target=slack.main)
 thread.daemon = True
