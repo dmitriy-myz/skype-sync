@@ -1,13 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from Skype4Py import Skype
+import Skype4Py
 
 def dump(obj):
     for attr in dir(obj):
         print "obj.%s = " %(attr)
 
-class Skype:
+class Skype(Skype4Py.Skype):
     def OnMessageStatus(self, Message, Status):
         msg = dict()
         if Status == 'RECEIVED':
@@ -20,7 +20,7 @@ class Skype:
             msg["chat"] = Message.Chat.Name
             msgTxt = "[skype] (%s): %s" % (Name, Message.Body)
             print msg
-            onMsgReceive(msg)
+            self.onMsgReceive(msg)
 #            if SkypeChatId in Message.Chat.Name:
 #                sendSlackMsg(msg)
     #commands
@@ -29,6 +29,8 @@ class Skype:
             if SkypeChatId in chat.Name:
                 chat.SendMessage(msg)
                 print chat.Name 
+    def onMsgReceive(self,msg):
+        pass
 
 
 
