@@ -1,17 +1,14 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-#import Skype4Py
-import time
-import requests
+import Skype4Py
 
 def dump(obj):
     for attr in dir(obj):
         print "obj.%s = " %(attr)
 
-# Set your config variables from the config.json file
 class Skype:
-    def onMsg(self, Message, Status):
+    def OnMessageStatus(self, Message, Status):
         msg = dict()
         if Status == 'RECEIVED':
             if Message.Sender.FullName == "":
@@ -21,7 +18,8 @@ class Skype:
             msg["text"] = Message.Body
             msg["messenger"] = "skype"
             msg["chat"] = Message.Chat.Name
-#            msg = "[skype] (%s): %s" % (Name, Message.Body)
+            msgTxt = "[skype] (%s): %s" % (Name, Message.Body)
+            print msg
             onMsgReceive(msg)
 #            if SkypeChatId in Message.Chat.Name:
 #                sendSlackMsg(msg)

@@ -8,10 +8,11 @@ import threading
 
 
 class Slack:
-    def __init__(self, userToken=None, channelId=None):
+    def __init__(self, userToken=None, channelId=None, debug = False):
         self._token = userToken
         self._channelId = channelId
         self._users = self._loadUsers()
+        self._debug = debug
         self._oldest = 0
         self._maxDelay = 5.0
         self._minDelay = 1.0
@@ -45,18 +46,26 @@ class Slack:
         msg = dict()
         params = {"token": self._token, "channel": self._channelId, "oldest": self._oldest}
         response = requests.post("https://slack.com/api/channels.history", params=params)
+        if self._debug:
+            print "get Hystory"
+            print response.text.decode('utf-8')
         messages = json.loads(response.text.decode('utf-8'), encoding = 'utf-8')["messages"]
         msgCount = len(messages)
         for message in reversed(messages):
             if "username" in message:
                 msg["sender"] = message["username"]
             else:
+                print "search name"
                 msg["sender"] = self.findUser(message["user"])
             msg["text"] = message["text"]
             msg["chat"] = self._channelId
             msg["messenger"] = "slack"
             if not "bot" in msg["sender"]:
-                onMsgReceive(msg)
+                if self._debug:
+                    print "calling onMsgReceive"
+                self.onMsgReceive(msg)
+#            elif self._debug:
+#                print "bot in name. Msg from: %s" %(msg["sender"])
             if float(self._oldest) <= float(message["ts"]):
                 self._oldest = str(message["ts"])
                 #writeSettings()
@@ -68,8 +77,14 @@ class Slack:
             self._delay += 0.1
         else:
             self._delay = self._maxDelay
+    def onMsgReceive(self, msg):
+        """
+        function called on receive message
+        """
     def main(self):
         while True:
+            if self._debug:
+                print "delay: %s" %(self._delay)
             time.sleep(self._delay)
             try:
                 msgCount = self.getHistory()
