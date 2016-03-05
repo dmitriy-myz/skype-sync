@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import Skype4Py
+from Skype4Py import Skype
 
 def dump(obj):
     for attr in dir(obj):
