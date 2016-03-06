@@ -17,6 +17,11 @@ class Slack:
         self._maxDelay = 5.0
         self._minDelay = 1.0
         self._delay = 1.0
+        thread = threading.Thread(target=self.main)
+        thread.daemon = True
+        thread.start()
+
+
     def memberList(self):
         userNames = []
         params = {"token": self._token, "channel": self._channelId}
