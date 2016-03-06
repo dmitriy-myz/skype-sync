@@ -7,8 +7,11 @@ def dump(obj):
     for attr in dir(obj):
         print "obj.%s = " %(attr)
 
-class Skype(Skype4Py.Skype):
-    def OnMessageStatus(self, Message, Status):
+class SkypeChannel(object):
+    def __init__(self):
+        self.skype = Skype4Py.Skype(Events=self)
+        self.skype.Attach()
+    def MessageStatus(self, Message, Status):
         msg = dict()
         if Status == 'RECEIVED':
             if Message.Sender.FullName == "":
@@ -18,7 +21,7 @@ class Skype(Skype4Py.Skype):
             msg["text"] = Message.Body
             msg["messenger"] = "skype"
             msg["chat"] = Message.Chat.Name
-            msgTxt = "[skype] (%s): %s" % (Name, Message.Body)
+            msgTxt = "[skype] (%s): %s" % (msg["sender"], Message.Body)
             print msg
             self.onMsgReceive(msg)
 #            if SkypeChatId in Message.Chat.Name:

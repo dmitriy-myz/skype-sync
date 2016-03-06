@@ -4,7 +4,7 @@
 import threading
 import json
 import time
-from skype import Skype
+from skype import SkypeChannel
 from slack import Slack
 with open('config.json') as f:
     settings = json.load(f)
@@ -28,9 +28,8 @@ def onMsgReceive(msg):
     print "text: %s" %(msg["text"])
     #print "[%s] (%s): %s" %(msg["messenger"], msg["sender"], msg["text"])
 
-skypeAPI = Skype()
-skypeAPI.Attach();
-skypeAPI.onMsgReceive = onMsgReceive
+skypeChannel = SkypeChannel()
+skypeChannel.onMsgReceive = onMsgReceive
 
 slack = Slack(settings['slack']['USERTOKENSTRING'], settings['slack']['CHANNEL_ID'], True)
 slack.onMsgReceive = onMsgReceive
