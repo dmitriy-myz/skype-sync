@@ -31,8 +31,8 @@ class Slack:
             userName = self.findUser(member)
             userNames.append(userName)
         return "\n".join(userNames)
-    def sendMsg(self, msg):
-        params = {"token": self._token, "channel": self._channelId, "text": msg}
+    def sendMsg(self, msg, target):
+        params = {"token": self._token, "channel": target, "text": msg}
         requests.post("https://api.slack.com/api/chat.postMessage", params = params)
         print msg
     def _loadUsers(self):

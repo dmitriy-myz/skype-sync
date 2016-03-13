@@ -22,19 +22,17 @@ class SkypeChannel(object, channels):
             msg["text"] = Message.Body
             msg["messenger"] = "skype"
             msg["chat"] = Message.Chat.Name
-#            msgTxt = "[skype] (%s): %s" % (msg["sender"], Message.Body)
-#            print msgTxt
             self.onMsgReceive(msg)
-#            if SkypeChatId in Message.Chat.Name:
-#                sendSlackMsg(msg)
     #commands
-    def sendMsg(self, msg, channel):
+    def sendMsg(self, msg, target):
         for chat in skype.Chats:
-            if channel == chat.Name:
+            if target == chat.Name:
+                print chat.Name
                 chat.SendMessage(msg)
-                print chat.Name 
 
     def onMsgReceive(self,msg):
+        msgTxt = "[skype] (%s): %s" % (msg["sender"], msg["text"])
+        print msgTxt
         pass
 
 
