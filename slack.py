@@ -8,18 +8,30 @@ import threading
 
 
 class Slack:
-    def __init__(self, userToken=None, channelId=None, debug = False):
-        self._token = userToken
-        self._channelId = channelId
+    def __init__(self, configFile, debug = False):
+        self.configFile = configFile
+        loadSettings()
         self._users = self._loadUsers()
         self._debug = debug
-        self._oldest = 0
         self._maxDelay = 5.0
         self._minDelay = 1.0
         self._delay = 1.0
         thread = threading.Thread(target=self.main)
         thread.daemon = True
         thread.start()
+
+    def loadSettings(self):
+        with open(self.configFile) as f:
+            self._settings = json.load(f)
+            self._token = self._settings['USERTOKENSTRING']
+            self._channelId = self._settings['CHANNEL_ID']
+            self._oldest = self._settings['oldest']
+
+    def saveSettings(self):
+        self._settings['oldest'] = self._oldest
+        with open(self.configFile, 'w') as f:
+            json.dump(self.settings, f)
+
 
 
     def memberList(self):

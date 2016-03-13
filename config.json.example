@@ -1,9 +1,8 @@
-{   "slack": {
-       "CHANNEL_ID" : "C06RKSGDQ",
-       "USERTOKENSTRING" : "xoxp-TOKEN",
-       "oldest" : "1456498537.000091"
-    },
-    "skype": {
-        "ChatId": "8cbca70aee978773"
+{
+    "channels": {
+        "1": {
+            "skype": ["#dmuzyca/$8cbca70aee978773"],
+            "slack": ["C06RKSGDQ"]
+        }
     }
 }
