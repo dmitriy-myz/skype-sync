@@ -7,7 +7,7 @@ def dump(obj):
     for attr in dir(obj):
         print "obj.%s = " %(attr)
 
-class SkypeChannel(object, channels):
+class Skype(object, channels):
     def __init__(self):
         self.skype = Skype4Py.Skype(Events=self)
         self.skype.Attach()
@@ -21,7 +21,7 @@ class SkypeChannel(object, channels):
                 msg["sender"] = Message.Sender.FullName
             msg["text"] = Message.Body
             msg["messenger"] = "skype"
-            msg["chat"] = Message.Chat.Name
+            msg["source"] = Message.Chat.Name
             self.onMsgReceive(msg)
     #commands
     def sendMsg(self, msg, target):

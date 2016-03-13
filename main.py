@@ -3,7 +3,7 @@
 
 import json
 import time
-#from skype import SkypeChannel
+#from skype import Skype
 from slack import Slack
 
 with open('config.json') as f:
@@ -18,17 +18,44 @@ def writeSettings():
     with open('config.json', 'w') as f:
         json.dump(settings, f)
 
+#class message proceed
+#link one channel to other
+
+#["skype"]["admin"]["#dmuzyca/$8cbca70aee978773"]
+#["slack"]["admin"]["C06RKSGDQ"]
+"""
+settings.skype.chats.1.id
+
+channels.1.skype.id
+channels.1.slack.id1
+channels.1.slack.id2
+"channels": { "1": {
+        "skype": ["#dmuzyca/$8cbca70aee978773"],
+        "slack": ["C06RKSGDQ"]
+    }
+}
+
+
+"""
 def onMsgReceive(msg):
     print "==================="
     print "received message"
     print "messenger: %s" % (msg["messenger"])
-    print "channel: %s" %(msg["chat"])
+    print "source: %s" %(msg["source"])
     print "from: %s" %(msg["sender"])
     print "text: %s" %(msg["text"])
+    messenger = msg["messenger"]
     #print "[%s] (%s): %s" %(msg["messenger"], msg["sender"], msg["text"])
+    for channelId in channels:
+        if msg["messenger"] in channels[channelId]:
+            if msg["source"] in channels[channelId][msg["messenger"]]
+                print "msg source in list"
+                print "internal channelId = ", channelId
+                break
 
-#skypeChannel = SkypeChannel()
-#skypeChannel.onMsgReceive = onMsgReceive
+
+skype = Skype()
+skype.onMsgReceive = onMsgReceive
 
 slack = Slack(settings['slack']['USERTOKENSTRING'], settings['slack']['CHANNEL_ID'], True)
 slack.onMsgReceive = onMsgReceive

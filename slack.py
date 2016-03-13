@@ -63,7 +63,7 @@ class Slack:
                 print "search name"
                 msg["sender"] = self.findUser(message["user"])
             msg["text"] = message["text"]
-            msg["chat"] = self._channelId
+            msg["source"] = self._channelId
             msg["messenger"] = "slack"
             if not "bot" in msg["sender"]:
                 if self._debug:
