@@ -30,7 +30,7 @@ class Slack:
     def saveSettings(self):
         self._settings['oldest'] = self._oldest
         with open(self.configFile, 'w') as f:
-            json.dump(self._settings, f)
+            json.dump(self._settings, f, indent=4, sort_keys=True)
 
     def memberList(self):
         userNames = []
