@@ -26,8 +26,16 @@ def onMsgReceive(msg):
             if msg["source"] in channels[channelId][msg["messenger"]]:
                 print "msg source in list"
                 print "internal channelId = ", channelId
+                sendMsg(msg, channelId)
                 break
 
+def sendMsg(msg, channelId):
+    for messenger in channels[channelId]:
+        for channel in channels[channelId][messenger]:
+            if (msg["messenger"] != messenger) and (msg["source"] != channel):
+                print "send message to channel: ", channel
+                print "on messenger: ", messenger
+                print "[%s] (%s): %s" %(msg["messenger"], msg["sender"], msg["text"])
 
 #skype = Skype()
 #skype.onMsgReceive = onMsgReceive
