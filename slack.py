@@ -10,7 +10,7 @@ import threading
 class Slack:
     def __init__(self, configFile, debug = False):
         self.configFile = configFile
-        loadSettings()
+        self.loadSettings()
         self._users = self._loadUsers()
         self._debug = debug
         self._maxDelay = 5.0
@@ -72,7 +72,8 @@ class Slack:
             if "username" in message:
                 msg["sender"] = message["username"]
             else:
-                print "search name"
+                if self._debug:
+                    print "search name"
                 msg["sender"] = self.findUser(message["user"])
             msg["text"] = message["text"]
             msg["source"] = self._channelId

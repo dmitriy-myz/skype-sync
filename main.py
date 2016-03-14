@@ -13,6 +13,7 @@ with open('config.json') as f:
 #["slack"]["admin"]["C06RKSGDQ"]
 
 def onMsgReceive(msg):
+    """
     print "==================="
     print "received message"
     print "messenger: %s" % (msg["messenger"])
@@ -21,6 +22,9 @@ def onMsgReceive(msg):
     print "text: %s" %(msg["text"])
     messenger = msg["messenger"]
     #print "[%s] (%s): %s" %(msg["messenger"], msg["sender"], msg["text"])
+    """
+
+    print "==================="
     for channelId in channels:
         if msg["messenger"] in channels[channelId]:
             if msg["source"] in channels[channelId][msg["messenger"]]:
@@ -32,7 +36,7 @@ def onMsgReceive(msg):
 def sendMsg(msg, channelId):
     for messenger in channels[channelId]:
         for channel in channels[channelId][messenger]:
-            if (msg["messenger"] != messenger) and (msg["source"] != channel):
+            if not ((msg["source"] == channel) and (msg["messenger"] == messenger)):
                 print "send message to channel: ", channel
                 print "on messenger: ", messenger
                 print "[%s] (%s): %s" %(msg["messenger"], msg["sender"], msg["text"])
@@ -40,7 +44,7 @@ def sendMsg(msg, channelId):
 #skype = Skype()
 #skype.onMsgReceive = onMsgReceive
 
-slack = Slack('slack.json', True)
+slack = Slack('slack.json', False)
 slack.onMsgReceive = onMsgReceive
 
 while True:
