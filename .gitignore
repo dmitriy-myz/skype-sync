@@ -1,4 +1,5 @@
 config.json
+slack.json
 *.swp
 *.pyc
 *.bak
