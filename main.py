@@ -21,15 +21,14 @@ def onMsgReceive(msg):
     print "from: %s" %(msg["sender"])
     print "text: %s" %(msg["text"])
     messenger = msg["messenger"]
-    #print "[%s] (%s): %s" %(msg["messenger"], msg["sender"], msg["text"])
     """
 
     print "==================="
     for channelId in channels:
         if msg["messenger"] in channels[channelId]:
             if msg["source"] in channels[channelId][msg["messenger"]]:
-                print "msg source in list"
-                print "internal channelId = ", channelId
+#                print "msg source in list"
+#                print "internal channelId = ", channelId
                 sendMsg(msg, channelId)
                 break
 
@@ -39,13 +38,28 @@ def sendMsg(msg, channelId):
             if not ((msg["source"] == channel) and (msg["messenger"] == messenger)):
                 print "send message to channel: ", channel
                 print "on messenger: ", messenger
-                print "[%s] (%s): %s" %(msg["messenger"], msg["sender"], msg["text"])
+                msg = "[%s] (%s): %s" %(msg["messenger"], msg["sender"], msg["text"])
+                messengers[messenger](msg, messenger)
 
 #skype = Skype()
 #skype.onMsgReceive = onMsgReceive
+def sendMsgSkype(msg, target):
+    #requests.post("https://api.slack.com/api/chat.postMessage", params = params)
+    print "send message on skype, channel: ", target
+    print msg
+
 
 slack = Slack('slack.json', False)
 slack.onMsgReceive = onMsgReceive
+
+messengers = dict()
+messengers["slack"] = slack.sendMsg
+messengers["skype"] = sendMsgSkype
+
+
+
+
+
 
 while True:
     raw_input()

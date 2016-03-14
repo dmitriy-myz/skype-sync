@@ -30,9 +30,7 @@ class Slack:
     def saveSettings(self):
         self._settings['oldest'] = self._oldest
         with open(self.configFile, 'w') as f:
-            json.dump(self.settings, f)
-
-
+            json.dump(self._settings, f)
 
     def memberList(self):
         userNames = []
@@ -43,15 +41,19 @@ class Slack:
             userName = self.findUser(member)
             userNames.append(userName)
         return "\n".join(userNames)
+
     def sendMsg(self, msg, target):
         params = {"token": self._token, "channel": target, "text": msg}
-        requests.post("https://api.slack.com/api/chat.postMessage", params = params)
+        print "send message on slack, channel: ", target
         print msg
+        #requests.post("https://api.slack.com/api/chat.postMessage", params = params)
+
     def _loadUsers(self):
         params = {"token": self._token, "channel": self._channelId}
         responseUser = requests.get("https://slack.com/api/users.list",params=params)
         users = json.loads(responseUser.text)["members"]
         return users
+
     def findUser(self, userId, recurcive=True):
         for user in self._users:
             if userId == user["id"]:
@@ -59,6 +61,7 @@ class Slack:
         if recursive:
             self._users = self._loadUsers()
             return self.findUser(userId, False)
+
     def getHistory(self):
         msg = dict()
         params = {"token": self._token, "channel": self._channelId, "oldest": self._oldest}
@@ -86,8 +89,9 @@ class Slack:
 #                print "bot in name. Msg from: %s" %(msg["sender"])
             if float(self._oldest) <= float(message["ts"]):
                 self._oldest = str(message["ts"])
-                #writeSettings()
+                self.saveSettings()
         return msgCount
+
     def smartDelay(self, msgCount):
         if msgCount != 0:
             self._delay = self._minDelay
@@ -95,10 +99,12 @@ class Slack:
             self._delay += 0.1
         else:
             self._delay = self._maxDelay
+
     def onMsgReceive(self, msg):
         """
         function called on receive message
         """
+
     def main(self):
         while True:
             if self._debug:
