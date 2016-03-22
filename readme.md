@@ -1,32 +1,53 @@
-How to use:
+Messenger synchronizer
+===
 
-if install on headless vm
+
+TODO
+---
+* bot interface 
+* use sqlite for storing settings
+* advanced commands on chat
+
+
+Install
+---
 
 ```bash
-apt-get install python-pip git python-dbus python-gobject dbus dbus-x11 xvfb fluxbox
-
+apt-get install python-pip git python-dbus python-gobject dbus dbus-x11
 pip install Skype4Py
 pip install dbus
 ```
 
+rename `config.json.example` to `config.json`
+
+Rename `slack.json.example` to `slack.json`
 
 
+On headless box you may need before to install `xvbf fluxbox` packages. And some vnc client
 
-
-Skype:
-
-get ChatId
+```bash
+apt-get install xvfb fluxbox x11vnc
 ```
-/createmoderatedchat
-/get name
-```
+After `start-headless.sh` script may be used.
 
-Slack:
+get chat id's
+---
 
-get CHANNEL_ID
-```
+* Skype:
+send `/get name` on chat
+
+* Slack:
+Get you token
 https://api.slack.com/docs/oauth-test-tokens
+
+Get channel list
 https://slack.com/api/channels.list?pretty=1&token=xoxp-xxxx
-```
+
+
+Limitation
+---
+* Skype: only old-style chat rooms supported. To create such chat just send to any chat `/createmoderatedchat` on new version of skype.
+
+
 
 
