@@ -3,8 +3,8 @@
 
 import json
 import time
-#from skype import Skype
-from slack import Slack
+#from skype.skype import Skype
+from slack.slack import Slack
 
 with open('config.json') as f:
     settings = json.load(f)
@@ -49,7 +49,7 @@ def sendMsgSkype(msg, target):
     print msg
 
 
-slack = Slack('slack.json', False)
+slack = Slack('settings/slack.json', False)
 slack.onMsgReceive = onMsgReceive
 
 messengers = dict()
