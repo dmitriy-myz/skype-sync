@@ -38,11 +38,9 @@ get chat id's
 send `/get name` on chat
 
 * Slack:
-Get you token
-https://api.slack.com/docs/oauth-test-tokens
 
-Get channel list
-https://slack.com/api/channels.list?pretty=1&token=xoxp-xxxx
+  * [Get you token] (https://api.slack.com/docs/oauth-test-tokens)
+  * [Get channel list](https://slack.com/api/channels.list?pretty=1&token=xoxp-xxxx "Add you token to url")
 
 
 Limitation
