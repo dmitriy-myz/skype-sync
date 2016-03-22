@@ -7,6 +7,7 @@ TODO
 * bot interface 
 * use sqlite for storing settings
 * advanced commands on chat
+* python virtualenv
 
 
 Install
@@ -47,6 +48,7 @@ https://slack.com/api/channels.list?pretty=1&token=xoxp-xxxx
 Limitation
 ---
 * Skype: only old-style chat rooms supported. To create such chat just send to any chat `/createmoderatedchat` on new version of skype.
+* Slack: currently only one channel served.
 
 
 
