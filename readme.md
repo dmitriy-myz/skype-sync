@@ -47,8 +47,12 @@ send `/get name` on chat
 
 Limitation
 ---
-* Skype: only old-style chat rooms supported. To create such chat just send to any chat `/createmoderatedchat` on new version of skype.
-* Slack: currently only one channel served.
+* Skype:
+
+  * only old-style chat rooms supported. To create such chat just send to any chat `/createmoderatedchat` on new version of skype.
+* Slack:
+
+  * currently only one channel served.
 
 
 
