@@ -9,6 +9,7 @@ TODO
 * advanced commands on chat
 * python virtualenv
 
+***
 
 Install
 ---
@@ -42,6 +43,7 @@ send `/get name` on chat
   * [Get you token] (https://api.slack.com/docs/oauth-test-tokens)
   * [Get channel list](https://slack.com/api/channels.list?pretty=1&token=xoxp-xxxx "Add you token to url")
 
+***
 
 Limitation
 ---
