@@ -39,7 +39,7 @@ def sendMsg(msg, channelId):
                 print "send message to channel: ", channel
                 print "on messenger: ", messenger
                 msgText = "[%s] (%s): %s" %(msg["messenger"], msg["sender"], msg["text"])
-                messengers[messenger](msgText, messenger)
+                messengers[messenger](msgText, channel)
 
 #skype = Skype()
 #skype.onMsgReceive = onMsgReceive
