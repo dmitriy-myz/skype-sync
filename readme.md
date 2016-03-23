@@ -8,6 +8,7 @@ TODO
 * use sqlite for storing settings
 * advanced commands on chat
 * python virtualenv
+* x64 skype?
 
 ***
 
@@ -17,9 +18,15 @@ Install
 ```bash
 apt-get install python-pip git python-dbus python-gobject dbus dbus-x11
 pip install Skype4Py
-pip install dbus
 ```
-
+[Install Skype for linux](http://www.skype.com/ru/download-skype/skype-for-computer/)
+```bash
+wget http://download.skype.com/linux/skype-debian_4.3.0.37-1_i386.deb
+sudo dpkg --add-architecture i386
+sudo apt-get update
+sudo dpkg -i skype-debian_4.3.0.37-1_i386.deb
+sudo apt-get install -f
+```
 rename `config.json.example` to `config.json`
 
 Rename `slack.json.example` to `slack.json`
