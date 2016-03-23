@@ -1,4 +1,4 @@
-#!/bins/bash
+#!/bin/bash
 XSERVERNUM=1
 export DISPLAY=:$XSERVERNUM
 
