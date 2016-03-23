@@ -38,8 +38,8 @@ def sendMsg(msg, channelId):
             if not ((msg["source"] == channel) and (msg["messenger"] == messenger)):
                 print "send message to channel: ", channel
                 print "on messenger: ", messenger
-                msg = "[%s] (%s): %s" %(msg["messenger"], msg["sender"], msg["text"])
-                messengers[messenger](msg, messenger)
+                msgText = "[%s] (%s): %s" %(msg["messenger"], msg["sender"], msg["text"])
+                messengers[messenger](msgText, messenger)
 
 #skype = Skype()
 #skype.onMsgReceive = onMsgReceive
