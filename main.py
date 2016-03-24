@@ -6,7 +6,7 @@ import time
 #from skype.skype import Skype
 from slack.slack import Slack
 
-with open('config.json') as f:
+with open('settings/config.json') as f:
     settings = json.load(f)
     channels = settings["channels"]
 #["skype"]["admin"]["#dmuzyca/$8cbca70aee978773"]
@@ -41,8 +41,8 @@ def sendMsg(msg, channelId):
                 msgText = "[%s] (%s): %s" %(msg["messenger"], msg["sender"], msg["text"])
                 messengers[messenger](msgText, channel)
 
-#skype = Skype()
-#skype.onMsgReceive = onMsgReceive
+skype = Skype()
+skype.onMsgReceive = onMsgReceive
 def sendMsgSkype(msg, target):
     #requests.post("https://api.slack.com/api/chat.postMessage", params = params)
     print "send message on skype, channel: ", target
@@ -54,7 +54,7 @@ slack.onMsgReceive = onMsgReceive
 
 messengers = dict()
 messengers["slack"] = slack.sendMsg
-messengers["skype"] = sendMsgSkype
+messengers["skype"] = skype.sendMsg
 
 
 
