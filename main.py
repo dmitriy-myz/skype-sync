@@ -3,7 +3,7 @@
 
 import json
 import time
-#from skype.skype import Skype
+from skype.skype import Skype
 from slack.slack import Slack
 
 with open('settings/config.json') as f:
