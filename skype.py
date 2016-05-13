@@ -100,7 +100,7 @@ def getSlackHistory(token):
             userName = findUser(message["user"])
 
         msg = "[slack] (%s): %s" %(userName, message["text"])
-        if not "bot" in userName:
+        if not "subtype" in message:
             print msg.encode('utf-8')
             sendSkypeMsg(msg)
 
