@@ -29,7 +29,7 @@ def onSkypeMsg(Message, Status):
             Name = Message.Sender.Handle
         else:
             Name = Message.Sender.FullName
-        msg = "[skype] (%s): %s" % (Name, Message.Body)
+        #msg = "[skype] (%s): %s" % (Name, Message.Body)
         if SkypeChatId in Message.Chat.Name:
             sendSlackMsg(Name, Message.Body)
 #commands
