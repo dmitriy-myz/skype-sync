@@ -31,7 +31,7 @@ def onSkypeMsg(Message, Status):
             Name = Message.Sender.FullName
         msg = "[skype] (%s): %s" % (Name, Message.Body)
         if SkypeChatId in Message.Chat.Name:
-            sendSlackMsg(msg)
+            sendSlackMsg(Name, Message.Body)
 #commands
         if "!ping" in Message.Body:
             print msg
@@ -61,9 +61,9 @@ def sendSkypeMsg(msg):
             chat.SendMessage(msg)
             print chat.Name 
 
-def sendSlackMsg(msg):
+def sendSlackMsg(name, msg):
     token = USERTOKENSTRING
-    params = {"token": token, "channel": CHANNEL_ID, "text": msg}
+    params = {"token": token, "channel": CHANNEL_ID, "text": msg, "username": name, "as_user": False}
     requests.post("https://api.slack.com/api/chat.postMessage", params = params)
     print msg
     pass
